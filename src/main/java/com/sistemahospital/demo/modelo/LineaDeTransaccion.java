@@ -53,4 +53,10 @@ public abstract class LineaDeTransaccion {
     public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
     }
+    public DocumentoTransaccion getDocumento() {
+        return documento;
+    }
+    public void setDocumento(DocumentoTransaccion documento) {
+        this.documento = documento;
+    }
 }

@@ -3,6 +3,8 @@ package com.sistemahospital.demo.modelo;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -20,7 +22,7 @@ public abstract class DocumentoTransaccion implements Prototype {
     private LocalDateTime fecha;
 
     @Column(nullable = false)
-    private BigDecimal valorTotal;
+    private BigDecimal valorTotal = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -29,6 +31,13 @@ public abstract class DocumentoTransaccion implements Prototype {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "paciente_id")
     private Paciente paciente;
+
+    @OneToMany(
+      mappedBy = "documento",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+    )
+    private List<LineaDeTransaccion> lineas = new ArrayList<>();
 
     // getters / setters 
     public Long getId() {
@@ -78,24 +87,35 @@ public abstract class DocumentoTransaccion implements Prototype {
         this.paciente = paciente;
     }
 
+    /** Añade una línea y recalcula el total */
+    public void addLinea(LineaDeTransaccion linea) {
+        linea.setDocumento(this);
+        linea.calcularSubtotal();
+        this.lineas.add(linea);
+        this.valorTotal = this.valorTotal.add(linea.getSubtotal());
+    }
+
+    /** Quita una línea y recalcula el total */
+    public void removeLinea(LineaDeTransaccion linea) {
+        if (this.lineas.remove(linea)) {
+            this.valorTotal = this.valorTotal.subtract(linea.getSubtotal());
+            linea.setDocumento(null);
+        }
+    }
+
+    public List<LineaDeTransaccion> getLineas() {
+        return lineas;
+    }
+
 
     /** Clona el documento (deep copy), se implementa en cada subclase */
     @Override
     public abstract DocumentoTransaccion clone();
 
-    /** Delegación al patrón State (ver paquete state) */
-    public void descargar() {
-        // más adelante inyectaremos el Map<EstadoDocumento,DocumentoState>
-    }
-
-    public DocumentoTransaccion facturar() {
-        // idem
-        return null;
-    }
-
-    /** Suma los subtotales de las líneas */
+     /** Suma los subtotales de las líneas */
     public BigDecimal calcularTotal() {
-        // implementar cuando tengas LineaDeTransaccion
-        return BigDecimal.ZERO;
+        return lineas.stream()
+            .map(LineaDeTransaccion::getSubtotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

@@ -2,6 +2,7 @@ package com.sistemahospital.demo.controlador;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,9 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sistemahospital.demo.modelo.Descargo;
+import com.sistemahospital.demo.modelo.LineaProducto;
+import com.sistemahospital.demo.modelo.LineaServicio;
 import com.sistemahospital.demo.servicio.DescargoService;
 
 @RestController
@@ -63,5 +67,25 @@ public class DescargoController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/lineas/servicio")
+    public ResponseEntity<LineaServicio> addLineaServicio(
+        @PathVariable Long id,
+        @RequestParam Long servicioId,
+        @RequestParam Integer cantidad
+    ) {
+        LineaServicio linea = service.addLineaServicio(id, servicioId, cantidad);
+        return ResponseEntity.status(HttpStatus.CREATED).body(linea);
+    }
+
+    @PostMapping("/{id}/lineas/producto")
+    public ResponseEntity<LineaProducto> addLineaProducto(
+        @PathVariable Long id,
+        @RequestParam Long productoId,
+        @RequestParam Integer cantidad
+    ) {
+        LineaProducto linea = service.addLineaProducto(id, productoId, cantidad);
+        return ResponseEntity.status(HttpStatus.CREATED).body(linea);
     }
 }
