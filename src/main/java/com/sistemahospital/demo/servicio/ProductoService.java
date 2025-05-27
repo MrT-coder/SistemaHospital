@@ -8,7 +8,7 @@ import com.sistemahospital.demo.modelo.Producto;
 public interface ProductoService {
     List<Producto> findAll();
     Optional<Producto> findById(Long id);
-    List<Producto> findByCategoria(String categoria);
+    List<Producto> findByTipo(String tipo);
     Producto save(Producto producto);
     Optional<Producto> update(Long id, Producto cambios);
     void delete(Long id);

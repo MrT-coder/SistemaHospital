@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sistemahospital.demo.catalogo.AtencionMedica;
+import com.sistemahospital.demo.catalogo.ExamenLab;
+import com.sistemahospital.demo.catalogo.ImagenRayosX;
+import com.sistemahospital.demo.catalogo.ProcedimientoMedico;
 import com.sistemahospital.demo.modelo.Servicio;
 import com.sistemahospital.demo.repositorio.ServicioRepository;
 
@@ -33,9 +37,9 @@ public class ServicioServiceImpl implements ServicioService {
     @Override
     public List<Servicio> findByTipo(String tipo) {
         return repo.findAll()
-                   .stream()
-                   .filter(s -> s.getClass().getSimpleName().equalsIgnoreCase(tipo))
-                   .collect(Collectors.toList());
+                .stream()
+                .filter(s -> s.getClass().getSimpleName().equalsIgnoreCase(tipo))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -47,13 +51,33 @@ public class ServicioServiceImpl implements ServicioService {
     @Override
     public Optional<Servicio> update(Long id, Servicio cambios) {
         return repo.findById(id)
-            .map(existing -> {
-                existing.setDescripcion(cambios.getDescripcion());
-                existing.setPrecio(cambios.getPrecio());
-                // para subclases podrías castear y actualizar sus campos
-                validate(existing);
-                return repo.save(existing);
-            });
+                .map(existing -> {
+                    existing.setDescripcion(cambios.getDescripcion());
+                    existing.setPrecio(cambios.getPrecio());
+
+                    // Campos de subclase
+                    if (existing instanceof AtencionMedica && cambios instanceof AtencionMedica) {
+                        AtencionMedica orig = (AtencionMedica) existing;
+                        AtencionMedica mod = (AtencionMedica) cambios;
+                        orig.setDuracion(mod.getDuracion());
+                        orig.setMedico(mod.getMedico());
+                    } else if (existing instanceof ExamenLab && cambios instanceof ExamenLab) {
+                        ExamenLab orig = (ExamenLab) existing;
+                        ExamenLab mod = (ExamenLab) cambios;
+                        orig.setTipoExamen(mod.getTipoExamen());
+                    } else if (existing instanceof ImagenRayosX && cambios instanceof ImagenRayosX) {
+                        ImagenRayosX orig = (ImagenRayosX) existing;
+                        ImagenRayosX mod = (ImagenRayosX) cambios;
+                        orig.setRegion(mod.getRegion());
+                    } else if (existing instanceof ProcedimientoMedico && cambios instanceof ProcedimientoMedico) {
+                        ProcedimientoMedico orig = (ProcedimientoMedico) existing;
+                        ProcedimientoMedico mod = (ProcedimientoMedico) cambios;
+                        orig.setNombreProcedimiento(mod.getNombreProcedimiento());
+                    }
+
+                    validate(existing);
+                    return repo.save(existing);
+                });
     }
 
     @Override

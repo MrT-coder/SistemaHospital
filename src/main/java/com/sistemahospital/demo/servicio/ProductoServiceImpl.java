@@ -3,6 +3,13 @@ package com.sistemahospital.demo.servicio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sistemahospital.demo.catalogo.AtencionMedica;
+import com.sistemahospital.demo.catalogo.Comida;
+import com.sistemahospital.demo.catalogo.Medicina;
+import com.sistemahospital.demo.catalogo.CuartoHospital;
+import com.sistemahospital.demo.catalogo.CuartoHospital;
+import com.sistemahospital.demo.catalogo.Medicina;
+import com.sistemahospital.demo.catalogo.ProcedimientoMedico;
 import com.sistemahospital.demo.modelo.Producto;
 import com.sistemahospital.demo.repositorio.ProductoRepository;
 
@@ -31,12 +38,12 @@ public class ProductoServiceImpl implements ProductoService {
         return repo.findById(id);
     }
 
-    @Override
-    public List<Producto> findByCategoria(String categoria) {
+     @Override
+    public List<Producto> findByTipo(String tipo) {
         return repo.findAll()
-                   .stream()
-                   .filter(p -> p.getCategoria().equalsIgnoreCase(categoria))
-                   .collect(Collectors.toList());
+                .stream()
+                .filter(p -> p.getClass().getSimpleName().equalsIgnoreCase(tipo))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -51,7 +58,25 @@ public class ProductoServiceImpl implements ProductoService {
             .map(existing -> {
                 existing.setDescripcion(cambios.getDescripcion());
                 existing.setPrecio(cambios.getPrecio());
-                existing.setCategoria(cambios.getCategoria());
+
+                // Campos de subclase
+                 if (existing instanceof Comida && cambios instanceof Comida) {
+                        Comida orig = (Comida) existing;
+                        Comida mod = (Comida) cambios;
+                        orig.setValorNutricional(mod.getValorNutricional());
+                        orig.setTipoComida(mod.getTipoComida());
+                    } else if (existing instanceof Medicina && cambios instanceof Medicina) {
+                        Medicina orig = (Medicina) existing;
+                        Medicina mod = (Medicina) cambios;
+                        orig.setLaboratorio(mod.getLaboratorio());
+                        orig.setDosis(mod.getDosis());
+                    } else if (existing instanceof CuartoHospital && cambios instanceof CuartoHospital) {
+                        CuartoHospital orig = (CuartoHospital) existing;
+                        CuartoHospital mod = (CuartoHospital) cambios;
+                        orig.setNumeroHabitacion(mod.getNumeroHabitacion());
+                        orig.setFechaCheckIn(mod.getFechaCheckIn());
+                        orig.setFechaCheckOut(mod.getFechaCheckOut());
+                    } 
                 validate(existing);
                 return repo.save(existing);
             });
@@ -68,9 +93,6 @@ public class ProductoServiceImpl implements ProductoService {
         }
         if (p.getPrecio() == null || p.getPrecio().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("El precio debe ser mayor a 0");
-        }
-        if (p.getCategoria() == null || p.getCategoria().isBlank()) {
-            throw new IllegalArgumentException("La categoría es obligatoria");
         }
     }
 }

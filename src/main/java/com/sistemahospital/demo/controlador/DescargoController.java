@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sistemahospital.demo.dto.DescargoDTO;
+import com.sistemahospital.demo.dto.DescargoUpdateDTO;
 import com.sistemahospital.demo.modelo.Descargo;
 import com.sistemahospital.demo.modelo.LineaProducto;
 import com.sistemahospital.demo.modelo.LineaServicio;
@@ -32,16 +34,15 @@ public class DescargoController {
 
     // 1) Listar todos los descargos
     @GetMapping
-    public List<Descargo> getAll() {
-        return service.findAll();
+    public ResponseEntity<List<DescargoDTO>> getAll() {
+        List<DescargoDTO> todos = service.findAll();
+        return ResponseEntity.ok(todos);
     }
 
     // 2) Traer un descargo por id
     @GetMapping("/{id}")
-    public ResponseEntity<Descargo> getById(@PathVariable Long id) {
-        return service.findById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DescargoDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
     // 3) Crear un nuevo descargo
@@ -53,13 +54,10 @@ public class DescargoController {
 
     // 4) Actualizar (p. ej. para cambiar fecha o paciente antes de descargar)
     @PutMapping("/{id}")
-    public ResponseEntity<Descargo> update(
-        @PathVariable Long id,
-        @Validated @RequestBody Descargo cambios
-    ) {
-        return service.update(id, cambios)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DescargoDTO> update(
+            @PathVariable Long id,
+            @RequestBody DescargoUpdateDTO upd) {
+        return ResponseEntity.ok(service.update(id, upd));
     }
 
     // 5) Eliminar
@@ -71,20 +69,18 @@ public class DescargoController {
 
     @PostMapping("/{id}/lineas/servicio")
     public ResponseEntity<LineaServicio> addLineaServicio(
-        @PathVariable Long id,
-        @RequestParam Long servicioId,
-        @RequestParam Integer cantidad
-    ) {
+            @PathVariable Long id,
+            @RequestParam Long servicioId,
+            @RequestParam Integer cantidad) {
         LineaServicio linea = service.addLineaServicio(id, servicioId, cantidad);
         return ResponseEntity.status(HttpStatus.CREATED).body(linea);
     }
 
     @PostMapping("/{id}/lineas/producto")
     public ResponseEntity<LineaProducto> addLineaProducto(
-        @PathVariable Long id,
-        @RequestParam Long productoId,
-        @RequestParam Integer cantidad
-    ) {
+            @PathVariable Long id,
+            @RequestParam Long productoId,
+            @RequestParam Integer cantidad) {
         LineaProducto linea = service.addLineaProducto(id, productoId, cantidad);
         return ResponseEntity.status(HttpStatus.CREATED).body(linea);
     }

@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "documento_transaccion")
@@ -28,21 +31,18 @@ public abstract class DocumentoTransaccion implements Prototype {
     @Column(nullable = false)
     private EstadoDocumento estado;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "paciente_id")
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
-    @OneToMany(
-      mappedBy = "documento",
-      cascade = CascadeType.ALL,
-      orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "documento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LineaDeTransaccion> lineas = new ArrayList<>();
 
-    // getters / setters 
+    // getters / setters
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -107,15 +107,14 @@ public abstract class DocumentoTransaccion implements Prototype {
         return lineas;
     }
 
-
     /** Clona el documento (deep copy), se implementa en cada subclase */
     @Override
     public abstract DocumentoTransaccion clone();
 
-     /** Suma los subtotales de las líneas */
+    /** Suma los subtotales de las líneas */
     public BigDecimal calcularTotal() {
         return lineas.stream()
-            .map(LineaDeTransaccion::getSubtotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(LineaDeTransaccion::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

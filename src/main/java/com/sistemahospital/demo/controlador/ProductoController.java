@@ -32,9 +32,9 @@ public class ProductoController {
             .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/categoria/{categoria}")
-    public List<Producto> getByCategoria(@PathVariable String categoria) {
-        return service.findByCategoria(categoria);
+    @GetMapping("/tipo/{tipo}")
+    public List<Producto> getByTipo(@PathVariable String tipo) {
+        return service.findByTipo(tipo);
     }
 
     @PostMapping
