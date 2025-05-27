@@ -23,4 +23,13 @@ public class LineaProducto extends LineaDeTransaccion {
             setPrecioUnitario(producto.getPrecio());
         }
     }
+
+     @Override
+    public LineaProducto clone() {
+        LineaProducto copia = new LineaProducto();
+        copia.setCantidad(this.getCantidad());
+        copia.setPrecioUnitario(producto.getPrecio());
+        copia.setProducto(this.getProducto());
+        return copia;
+    }
 }

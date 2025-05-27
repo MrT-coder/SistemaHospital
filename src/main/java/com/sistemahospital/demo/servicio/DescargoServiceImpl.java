@@ -113,9 +113,9 @@ public class DescargoServiceImpl implements DescargoService {
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado: " + servicioId));
 
         LineaServicio linea = new LineaServicio();
-         linea.setCantidad(cantidad);
+        linea.setCantidad(cantidad);
         linea.setPrecioUnitario(serv.getPrecio());
-         linea.setServicio(serv);
+        linea.setServicio(serv);
 
         desc.addLinea(linea);
         repo.save(desc); // persiste también la nueva línea

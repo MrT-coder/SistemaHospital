@@ -16,6 +16,7 @@ public class LineaServicio extends LineaDeTransaccion {
     public Servicio getServicio() {
         return servicio;
     }
+
     public void setServicio(Servicio servicio) {
         this.servicio = servicio;
         // Actualizar precio unitario y recalcular subtotal
@@ -23,6 +24,13 @@ public class LineaServicio extends LineaDeTransaccion {
             setPrecioUnitario(servicio.getPrecio());
         }
     }
-    
-    
+
+    @Override
+    public LineaServicio clone() {
+        LineaServicio copia = new LineaServicio();
+        copia.setCantidad(this.getCantidad());
+        copia.setPrecioUnitario(servicio.getPrecio());
+        copia.setServicio(this.getServicio());
+        return copia;
+    }
 }

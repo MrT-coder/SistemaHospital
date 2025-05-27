@@ -10,6 +10,7 @@ import com.sistemahospital.demo.repositorio.DescargoRepository;
 import com.sistemahospital.demo.repositorio.FacturaRepository;
 import com.sistemahospital.demo.state.DocumentoState;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -44,5 +45,21 @@ public class DocumentoServiceImpl implements DocumentoService {
         Factura fac = (Factura) state.facturar(desc);
         // persistimos la nueva factura
         return facturaRepo.save(fac);
+    }
+
+    @Override
+    public List<Factura> findAllFacturas() {
+        return facturaRepo.findAll();
+    }
+    @Override
+    public Factura findFacturaById(Long id) {
+        return facturaRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Factura no encontrada: " + id));
+    }
+    @Override
+    public void deleteFactura(Long id) {
+        Factura factura = facturaRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Factura no encontrada: " + id));
+        facturaRepo.delete(factura);
     }
 }

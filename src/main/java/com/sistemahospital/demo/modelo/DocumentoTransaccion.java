@@ -6,13 +6,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "documento_transaccion")
-public abstract class DocumentoTransaccion implements Prototype {
+public abstract class DocumentoTransaccion implements Prototype<DocumentoTransaccion> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
