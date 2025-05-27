@@ -25,7 +25,6 @@ public class FacturaController {
     // Listar todas las facturas
     @GetMapping
     public ResponseEntity<List<FacturaDTO>> listAll() {
-        // Asumimos que DocumentoServiceImpl implementa también un método findAllFacturas()
         List<FacturaDTO> dtos = documentoService.findAllFacturas()
             .stream()
             .map(this::toDTO)
