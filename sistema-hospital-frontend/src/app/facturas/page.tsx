@@ -1,24 +1,45 @@
 // app/facturas/page.tsx
-import Link from "next/link";
-import { use } from "react";
-import { FacturaService } from "../services/factura-service";
+"use client";
 
-export default async function FacturaListPage() {
-  const facturas = await FacturaService.getAll();
+import { useEffect, useState } from "react";
+import { FacturaService } from "../services/factura-service";
+import { FacturaList } from "../../components/facturas/factura-list";
+import { useRouter } from "next/navigation";
+import type { Factura } from "../types/factura";
+import { toast } from "sonner";
+
+export default function FacturasPage() {
+  const [facturas, setFacturas] = useState<Factura[]>([]);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const data = await FacturaService.listAll();
+      setFacturas(data);
+    } catch (e: any) {
+      toast.error("Error", { description: e.message });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Facturas</h1>
-      <ul className="space-y-2">
-        {facturas.map((f) => (
-          <li key={f.id} className="p-4 border rounded hover:bg-gray-50 flex justify-between">
-            <Link href={`/facturas/${f.id}`}>
-              #{f.nroFactura} — {new Date(f.fechaEmision).toLocaleDateString()}
-            </Link>
-            <span className="font-semibold text-green-600">${f.valorTotal.toFixed(2)}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <FacturaList
+      facturas={facturas}
+      isLoading={loading}
+      onAdd={() => router.push("/facturas/nueva")}
+      onView={f => router.push(`/facturas/${f.id}`)}
+      onDelete={async id => {
+        await FacturaService.delete(id);
+        load();
+        toast.success("Factura eliminada");
+      }}
+    />
   );
 }

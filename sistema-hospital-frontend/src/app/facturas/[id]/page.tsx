@@ -19,7 +19,7 @@ export default function FacturaDetailPage() {
   return (
     <div className="p-6 space-y-4">
       {/* ← Botón de volver atrás */}
-      <Button variant="outline" onClick={() => router.back()}>
+      <Button variant="outline" onClick={() => router.push("/facturas")}>
         ← Volver
       </Button>
 

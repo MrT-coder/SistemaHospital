@@ -1,36 +1,23 @@
 // app/types/factura.ts
+export type EstadoDocumento = "PENDIENTE" | "DESCARGADO" | "FACTURADO";
 
-export type EstadoDocumento = "PENDIENTE" | "DESCARGADO" | "FACTURADO"
-
-export interface Servicio {
-  id: number
-  descripcion: string
-  precio: number
-}
-
-export interface Producto {
-  id: number
-  descripcion: string
-  precio: number
-}
-
-export interface Linea {
-  id?: number
-  cantidad: number
-  precioUnitario: number
-  subtotal: number
-  servicio?: Servicio | null
-  producto?: Producto | null
+export interface LineaFactura {
+  id: number;
+  cantidad: number;
+  precioUnitario: number;
+  subtotal: number;
+  servicio?: { id: number; descripcion: string; precio: number } | null;
+  producto?: { id: number; descripcion: string; precio: number } | null;
 }
 
 export interface Factura {
-  id?: number
-  nro: string
-  fecha: string           // ISO datetime string
-  valorTotal: number
-  estado: EstadoDocumento
-  pacienteId: number
-  nroFactura: string
-  fechaEmision: string    // ISO datetime string
-  lineas: Linea[]
+  id: number;
+  nro: string;
+  fecha: string;           // igual que en Descargo
+  valorTotal: number;
+  estado: EstadoDocumento;
+  pacienteId: number;
+  nroFactura: string;
+  fechaEmision: string;
+  lineas: LineaFactura[];
 }

@@ -1,23 +1,27 @@
 // app/services/factura-service.ts
 import type { Factura } from "../types/factura";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 export class FacturaService {
-  static async getAll(): Promise<Factura[]> {
-    const res = await fetch(`${API}/api/facturas`);
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
+  private static async req<T>(url: string, opts: RequestInit = {}) {
+    const res = await fetch(`${API_BASE}/api${url}`, {
+      headers: { "Content-Type": "application/json" },
+      ...opts,
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.status === 204 ? ({} as T) : res.json() as Promise<T>;
   }
 
-  static async getById(id: number): Promise<Factura> {
-    const res = await fetch(`${API}/api/facturas/${id}`);
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
+  static listAll() {
+    return this.req<Factura[]>("/facturas", { method: "GET" });
   }
 
-  static async delete(id: number): Promise<void> {
-    const res = await fetch(`${API}/api/facturas/${id}`, { method: "DELETE" });
-    if (!res.ok) throw new Error(await res.text());
+  static getById(id: number) {
+    return this.req<Factura>(`/facturas/${id}`, { method: "GET" });
+  }
+
+  static delete(id: number) {
+    return this.req<void>(`/facturas/${id}`, { method: "DELETE" });
   }
 }
