@@ -80,9 +80,7 @@ export function DescargoList({ descargos, onEdit, onDelete, onAdd, onView, isLoa
   }
 
   const getTotalLineas = (descargo: Descargo) => {
-    const servicios = descargo.lineasServicio?.length || 0
-    const productos = descargo.lineasProducto?.length || 0
-    return servicios + productos
+    return descargo.lineas?.length || 0
   }
 
   return (
@@ -150,6 +148,7 @@ export function DescargoList({ descargos, onEdit, onDelete, onAdd, onView, isLoa
                     <TableHead>Paciente</TableHead>
                     <TableHead>Fecha</TableHead>
                     <TableHead>Estado</TableHead>
+                    <TableHead>Líneas</TableHead>
                     <TableHead>Total</TableHead>
                     <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
@@ -182,6 +181,11 @@ export function DescargoList({ descargos, onEdit, onDelete, onAdd, onView, isLoa
                         <Badge variant={getEstadoBadgeVariant(descargo.estado!)}>
                           {getEstadoLabel(descargo.estado!)}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-center">
+                          <Badge variant="outline">{getTotalLineas(descargo)}</Badge>
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1 font-semibold text-green-600">

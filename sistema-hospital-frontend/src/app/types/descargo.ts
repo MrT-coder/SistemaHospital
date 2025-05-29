@@ -10,9 +10,25 @@ export interface DescargoBase {
   estado?: EstadoDocumento
 }
 
+export interface Linea {
+  id?: number
+  cantidad: number
+  precioUnitario: number
+  subtotal: number
+  servicio?: {
+    id: number
+    descripcion: string
+    precio: number
+  } | null
+  producto?: {
+    id: number
+    descripcion: string
+    precio: number
+  } | null
+}
+
 export interface Descargo extends DescargoBase {
-  lineasServicio?: LineaServicio[]
-  lineasProducto?: LineaProducto[]
+  lineas?: Linea[]
   paciente?: {
     id: number
     nombre: string
@@ -30,33 +46,6 @@ export interface DescargoUpdateData {
   nro: string
   fecha: string
   pacienteId: number
-}
-
-export interface LineaBase {
-  id?: number
-  cantidad: number
-  precioUnitario: number
-  subtotal: number
-}
-
-export interface LineaServicio extends LineaBase {
-  servicioId: number
-  servicio?: {
-    id: number
-    descripcion: string
-    precio: number
-    servicioTipo: string
-  }
-}
-
-export interface LineaProducto extends LineaBase {
-  productoId: number
-  producto?: {
-    id: number
-    descripcion: string
-    precio: number
-    productoTipo: string
-  }
 }
 
 export interface LineaServicioFormData {

@@ -43,7 +43,6 @@ public class DocumentoServiceImpl implements DocumentoService {
             .orElseThrow(() -> new RuntimeException("Descargo no encontrado: " + id));
         DocumentoState state = estados.get(desc.getEstado());
         Factura fac = (Factura) state.facturar(desc);
-        // persistimos la nueva factura
         return facturaRepo.save(fac);
     }
 

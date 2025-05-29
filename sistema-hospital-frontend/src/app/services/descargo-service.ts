@@ -2,11 +2,10 @@ import type {
   Descargo,
   DescargoFormData,
   DescargoUpdateData,
-  LineaServicio,
-  LineaProducto,
+  Linea,
   LineaServicioFormData,
   LineaProductoFormData,
-} from "../types/descargo"
+} from "../../app/types/descargo"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
 
@@ -103,6 +102,26 @@ Soluciones:
     }
   }
 
+  // Función auxiliar para enriquecer descargos con información del paciente
+  private static async enrichDescargoWithPaciente(descargo: Descargo): Promise<Descargo> {
+    try {
+      // Importar PacienteService aquí para evitar dependencias circulares
+      const { PacienteService } = await import("./paciente-service")
+      const paciente = await PacienteService.getById(descargo.pacienteId)
+      return {
+        ...descargo,
+        paciente: {
+          id: paciente.id!,
+          nombre: paciente.nombre,
+          documentoIdentidad: paciente.documentoIdentidad,
+        },
+      }
+    } catch (error) {
+      console.warn("No se pudo cargar información del paciente:", error)
+      return descargo
+    }
+  }
+
   // Operaciones CRUD básicas
   static async getAll(): Promise<Descargo[]> {
     const url = `${API_BASE_URL}/api/descargos`
@@ -119,7 +138,12 @@ Soluciones:
       return []
     }
 
-    return result.data
+    // Enriquecer cada descargo con información del paciente
+    const enrichedDescargos = await Promise.all(
+      result.data.map((descargo) => this.enrichDescargoWithPaciente(descargo)),
+    )
+
+    return enrichedDescargos
   }
 
   static async getById(id: number): Promise<Descargo> {
@@ -132,7 +156,8 @@ Soluciones:
       throw new Error(result.error)
     }
 
-    return result.data!
+    // Enriquecer con información del paciente
+    return await this.enrichDescargoWithPaciente(result.data!)
   }
 
   static async create(descargo: DescargoFormData): Promise<Descargo> {
@@ -154,7 +179,7 @@ Soluciones:
       throw new Error(result.error)
     }
 
-    return result.data!
+    return await this.enrichDescargoWithPaciente(result.data!)
   }
 
   static async update(id: number, descargo: DescargoUpdateData): Promise<Descargo> {
@@ -168,7 +193,7 @@ Soluciones:
       throw new Error(result.error)
     }
 
-    return result.data!
+    return await this.enrichDescargoWithPaciente(result.data!)
   }
 
   static async delete(id: number): Promise<void> {
@@ -183,9 +208,9 @@ Soluciones:
   }
 
   // Operaciones para líneas de servicios
-  static async addLineaServicio(descargoId: number, lineaData: LineaServicioFormData): Promise<LineaServicio> {
+  static async addLineaServicio(descargoId: number, lineaData: LineaServicioFormData): Promise<Linea> {
     const url = `${API_BASE_URL}/api/descargos/${descargoId}/lineas/servicio?servicioId=${lineaData.servicioId}&cantidad=${lineaData.cantidad}`
-    const result = await this.makeRequest<LineaServicio>(url, {
+    const result = await this.makeRequest<Linea>(url, {
       method: "POST",
     })
 
@@ -197,9 +222,9 @@ Soluciones:
   }
 
   // Operaciones para líneas de productos
-  static async addLineaProducto(descargoId: number, lineaData: LineaProductoFormData): Promise<LineaProducto> {
+  static async addLineaProducto(descargoId: number, lineaData: LineaProductoFormData): Promise<Linea> {
     const url = `${API_BASE_URL}/api/descargos/${descargoId}/lineas/producto?productoId=${lineaData.productoId}&cantidad=${lineaData.cantidad}`
-    const result = await this.makeRequest<LineaProducto>(url, {
+    const result = await this.makeRequest<Linea>(url, {
       method: "POST",
     })
 
