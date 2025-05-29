@@ -1,10 +1,11 @@
 import React from 'react'
 import Link from 'next/link'
-import { FileText, DollarSign, Users, Package, Wrench } from 'lucide-react'
+import { FileText, DollarSign, Users, Package, Wrench, Home } from 'lucide-react'
 
 export default function Navbar() {
   const links = [
-    { href: '/', label: 'Descargos', icon: <FileText className="mr-2 h-4 w-4" /> },
+    { href: '/', label: 'Inicio', icon: <Home className="mr-2 h-4 w-4" /> },
+    { href: '/descargos', label: 'Descargos', icon: <FileText className="mr-2 h-4 w-4" /> },
     { href: '/facturas', label: 'Facturas', icon: <DollarSign className="mr-2 h-4 w-4" /> },
     { href: '/pacientes', label: 'Pacientes', icon: <Users className="mr-2 h-4 w-4" /> },
     { href: '/servicios', label: 'Servicios', icon: <Wrench className="mr-2 h-4 w-4" /> },
