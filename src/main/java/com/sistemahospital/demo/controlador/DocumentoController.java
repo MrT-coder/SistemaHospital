@@ -10,9 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sistemahospital.demo.dto.FacturaDTO;
 import com.sistemahospital.demo.dto.LineaDTO;
+import com.sistemahospital.demo.dto.ProductoDTO;
+import com.sistemahospital.demo.dto.ServicioDTO;
 import com.sistemahospital.demo.modelo.Descargo;
 import com.sistemahospital.demo.modelo.Factura;
+import com.sistemahospital.demo.modelo.LineaProducto;
 import com.sistemahospital.demo.modelo.LineaServicio;
+import com.sistemahospital.demo.modelo.Producto;
+import com.sistemahospital.demo.modelo.Servicio;
 import com.sistemahospital.demo.servicio.DocumentoService;
 
 @RestController
@@ -36,28 +41,46 @@ public class DocumentoController {
         return ResponseEntity.ok(toDTO(factura));
     }
 
-    private FacturaDTO toDTO(Factura f) {
-        FacturaDTO dto = new FacturaDTO();
-        dto.setId(f.getId());
-        dto.setNro(f.getNro());
-        dto.setFecha(f.getFecha());
-        dto.setValorTotal(f.getValorTotal());
-        dto.setEstado(f.getEstado().name());
-        dto.setPacienteId(f.getPaciente().getId());
-        dto.setNroFactura(f.getNroFactura());
-        dto.setFechaEmision(f.getFechaEmision());
-        dto.setLineas(
-                f.getLineas().stream().map(l -> {
-                    LineaDTO ld = new LineaDTO();
-                    ld.setId(l.getId());
-                    ld.setCantidad(l.getCantidad());
-                    ld.setPrecioUnitario(l.getprecioUnitario());
-                    ld.setSubtotal(l.getSubtotal());
-                    if (l instanceof LineaServicio) {
-                        ld.setServicioId(((LineaServicio) l).getServicio().getId());
-                    }
-                    return ld;
-                }).collect(Collectors.toList()));
-        return dto;
-    }
+   private FacturaDTO toDTO(Factura f) {
+    FacturaDTO dto = new FacturaDTO();
+    dto.setId(f.getId());
+    dto.setNro(f.getNro());
+    dto.setFecha(f.getFecha());
+    dto.setValorTotal(f.getValorTotal());
+    dto.setEstado(f.getEstado().name());
+    dto.setPacienteId(f.getPaciente().getId());
+    dto.setNroFactura(f.getNroFactura());
+    dto.setFechaEmision(f.getFechaEmision());
+
+    dto.setLineas(
+        f.getLineas().stream().map(l -> {
+            LineaDTO ld = new LineaDTO();
+            ld.setId(l.getId());
+            ld.setCantidad(l.getCantidad());
+            ld.setPrecioUnitario(l.getprecioUnitario());
+            ld.setSubtotal(l.getSubtotal());
+
+            if (l instanceof LineaServicio ls) {
+                // Mapeamos el servicio completo
+                ServicioDTO sd = new ServicioDTO();
+                sd.setId(ls.getServicio().getId());
+                sd.setDescripcion(ls.getServicio().getDescripcion());
+                sd.setPrecio(ls.getServicio().getPrecio());
+                ld.setServicio(sd);
+
+            } else if (l instanceof LineaProducto lp) {
+                // Mapeamos el producto completo
+                ProductoDTO pd = new ProductoDTO();
+                pd.setId(lp.getProducto().getId());
+                pd.setDescripcion(lp.getProducto().getDescripcion());
+                pd.setPrecio(lp.getProducto().getPrecio());
+                ld.setProducto(pd);
+            }
+
+            return ld;
+        }).collect(Collectors.toList())
+    );
+
+    return dto;
+}
 }

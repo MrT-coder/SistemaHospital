@@ -8,8 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.sistemahospital.demo.dto.DescargoDTO;
 import com.sistemahospital.demo.dto.DescargoUpdateDTO;
+import com.sistemahospital.demo.dto.LineaDTO;
+import com.sistemahospital.demo.dto.ProductoDTO;
+import com.sistemahospital.demo.dto.ServicioDTO;
 import com.sistemahospital.demo.modelo.Descargo;
 import com.sistemahospital.demo.modelo.EstadoDocumento;
+import com.sistemahospital.demo.modelo.LineaDeTransaccion;
 import com.sistemahospital.demo.modelo.LineaProducto;
 import com.sistemahospital.demo.modelo.LineaServicio;
 import com.sistemahospital.demo.modelo.Paciente;
@@ -39,6 +43,33 @@ public class DescargoServiceImpl implements DescargoService {
         this.pacienteRepo = pacienteRepo;
     }
 
+   public LineaDTO toLineaDTO(LineaDeTransaccion l) {
+    LineaDTO ld = new LineaDTO();
+    ld.setId(l.getId());
+    ld.setCantidad(l.getCantidad());
+    ld.setPrecioUnitario(l.getprecioUnitario());
+    ld.setSubtotal(l.getSubtotal());
+
+    if (l instanceof LineaServicio ls) {
+        // Mapeamos el servicio completo
+        ServicioDTO sd = new ServicioDTO();
+        sd.setId(ls.getServicio().getId());
+        sd.setDescripcion(ls.getServicio().getDescripcion());
+        sd.setPrecio(ls.getServicio().getPrecio());
+        ld.setServicio(sd);
+
+    } else if (l instanceof LineaProducto lp) {
+        // Mapeamos el producto completo
+        ProductoDTO pd = new ProductoDTO();
+        pd.setId(lp.getProducto().getId());
+        pd.setDescripcion(lp.getProducto().getDescripcion());
+        pd.setPrecio(lp.getProducto().getPrecio());
+        ld.setProducto(pd);
+    }
+
+    return ld;
+}
+
     // Convierte un Descargo a su DTO correspondiente
     public DescargoDTO toDTO(Descargo d) {
         DescargoDTO dto = new DescargoDTO();
@@ -47,7 +78,15 @@ public class DescargoServiceImpl implements DescargoService {
         dto.setFecha(d.getFecha());
         dto.setFechaDescargo(d.getFechaDescargo());
         dto.setValorTotal(d.getValorTotal());
+        dto.setEstado(d.getEstado());
         dto.setPacienteId(d.getPaciente().getId());
+
+        // ← aquí mapeas las líneas
+        List<LineaDTO> lineas = d.getLineas().stream()
+                .map(this::toLineaDTO)
+                .collect(Collectors.toList());
+        dto.setLineas(lineas);
+
         return dto;
     }
 

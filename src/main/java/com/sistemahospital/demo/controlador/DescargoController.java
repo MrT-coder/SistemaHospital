@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sistemahospital.demo.dto.DescargoDTO;
 import com.sistemahospital.demo.dto.DescargoUpdateDTO;
+import com.sistemahospital.demo.dto.LineaDTO;
 import com.sistemahospital.demo.modelo.Descargo;
 import com.sistemahospital.demo.modelo.LineaProducto;
 import com.sistemahospital.demo.modelo.LineaServicio;
@@ -67,21 +68,31 @@ public class DescargoController {
         return ResponseEntity.noContent().build();
     }
 
+   // 6.1) Añadir línea de servicio
     @PostMapping("/{id}/lineas/servicio")
-    public ResponseEntity<LineaServicio> addLineaServicio(
-            @PathVariable Long id,
-            @RequestParam Long servicioId,
-            @RequestParam Integer cantidad) {
+    public ResponseEntity<LineaDTO> addLineaServicio(
+        @PathVariable Long id,
+        @RequestParam Long servicioId,
+        @RequestParam Integer cantidad
+    ) {
         LineaServicio linea = service.addLineaServicio(id, servicioId, cantidad);
-        return ResponseEntity.status(HttpStatus.CREATED).body(linea);
+        LineaDTO dto = service.toLineaDTO(linea);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(dto);
     }
 
+    // 6.2) Añadir línea de producto
     @PostMapping("/{id}/lineas/producto")
-    public ResponseEntity<LineaProducto> addLineaProducto(
-            @PathVariable Long id,
-            @RequestParam Long productoId,
-            @RequestParam Integer cantidad) {
+    public ResponseEntity<LineaDTO> addLineaProducto(
+        @PathVariable Long id,
+        @RequestParam Long productoId,
+        @RequestParam Integer cantidad
+    ) {
         LineaProducto linea = service.addLineaProducto(id, productoId, cantidad);
-        return ResponseEntity.status(HttpStatus.CREATED).body(linea);
+        LineaDTO dto = service.toLineaDTO(linea);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(dto);
     }
 }

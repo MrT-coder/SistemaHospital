@@ -50,8 +50,7 @@ export function ProductoList({ productos, onEdit, onDelete, onAdd, isLoading }: 
 
   const filteredProductos = productos.filter((producto) => {
     const matchesSearch =
-      producto.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      producto.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+      producto.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesTipo = tipoFilter === "ALL" || producto.productoTipo === tipoFilter
     return matchesSearch && matchesTipo
   })
@@ -203,7 +202,6 @@ export function ProductoList({ productos, onEdit, onDelete, onAdd, isLoading }: 
                   <TableRow>
                     <TableHead>Tipo</TableHead>
                     <TableHead>Descripción</TableHead>
-                    <TableHead>Categoría</TableHead>
                     <TableHead>Precio</TableHead>
                     <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
@@ -221,9 +219,6 @@ export function ProductoList({ productos, onEdit, onDelete, onAdd, isLoading }: 
                           <p className="truncate">{producto.descripcion}</p>
                           {renderSpecificDetails(producto)}
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{producto.categoria}</Badge>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1 font-semibold text-green-600">

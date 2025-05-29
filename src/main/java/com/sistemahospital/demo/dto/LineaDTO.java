@@ -7,27 +7,35 @@ public class LineaDTO {
     private Integer cantidad;
     private BigDecimal precioUnitario;
     private BigDecimal subtotal;
-    private Long servicioId;
+    private ServicioDTO servicio; 
+    private ProductoDTO producto;
+
     // getters y setters...
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public Integer getCantidad() {
         return cantidad;
     }
+
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
+
     public BigDecimal getPrecioUnitario() {
         return precioUnitario;
     }
-    public void setPrecioUnitario(BigDecimal precioUnitario){
-        this.precioUnitario= precioUnitario;
+
+    public void setPrecioUnitario(BigDecimal precioUnitario) {
+        this.precioUnitario = precioUnitario;
     }
-    public BigDecimal getSubtotal(){
+
+    public BigDecimal getSubtotal() {
         return subtotal;
     }
 
@@ -35,11 +43,19 @@ public class LineaDTO {
         this.subtotal = subtotal;
     }
 
-    public Long getServicioId() {
-        return servicioId;
+    public ServicioDTO getServicio(){
+        return servicio;
     }
 
-    public void setServicioId(Long servicioId) {
-        this.servicioId = servicioId;
+    public void setServicio(ServicioDTO servicio) {
+        this.servicio = servicio;
+    }
+
+     public ProductoDTO getProducto() {
+        return producto;
+    }
+
+    public void setProducto(ProductoDTO producto) {
+        this.producto = producto;
     }
 }

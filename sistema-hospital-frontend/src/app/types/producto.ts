@@ -2,7 +2,6 @@ export interface ProductoBase {
   id?: number
   descripcion: string
   precio: number
-  categoria: string
   productoTipo: ProductoTipo
 }
 
@@ -32,7 +31,6 @@ export type Producto = Medicina | Comida | CuartoHospital
 export interface ProductoFormData {
   descripcion: string
   precio: number
-  categoria: string
   productoTipo: ProductoTipo
   // Campos adicionales
   laboratorio?: string

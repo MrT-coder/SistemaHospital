@@ -1,7 +1,12 @@
-import Link from "next/link"
-import { Button } from "../components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
-import { Users, FileText, Package, BarChart3 } from 'lucide-react'
+import Link from "next/link";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Users, FileText, Package, BarChart3 } from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -49,6 +54,38 @@ export default function HomePage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
+              <Package className="h-5 w-5" />
+              Productos
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Catálogo de productos hospitalarios
+            </p>
+            <Link href="/productos">
+              <Button className="w-full">Gestionar Productos</Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+         <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Descargos
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">Gestión de documentos de descargo</p>
+            <Link href="/descargos">
+              <Button className="w-full">Gestionar Descargos</Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5" />
               Documentos
             </CardTitle>
@@ -81,5 +118,5 @@ export default function HomePage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
