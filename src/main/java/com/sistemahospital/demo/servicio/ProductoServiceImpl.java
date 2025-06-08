@@ -3,13 +3,9 @@ package com.sistemahospital.demo.servicio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sistemahospital.demo.catalogo.AtencionMedica;
 import com.sistemahospital.demo.catalogo.Comida;
 import com.sistemahospital.demo.catalogo.Medicina;
 import com.sistemahospital.demo.catalogo.CuartoHospital;
-import com.sistemahospital.demo.catalogo.CuartoHospital;
-import com.sistemahospital.demo.catalogo.Medicina;
-import com.sistemahospital.demo.catalogo.ProcedimientoMedico;
 import com.sistemahospital.demo.modelo.Producto;
 import com.sistemahospital.demo.repositorio.ProductoRepository;
 

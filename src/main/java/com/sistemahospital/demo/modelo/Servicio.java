@@ -18,7 +18,7 @@ import jakarta.persistence.*;
 @JsonTypeInfo(
   use = JsonTypeInfo.Id.NAME,
   include = JsonTypeInfo.As.PROPERTY,
-  property = "servicioTipo"    // coincide con tu discriminator
+  property = "servicioTipo"    
 )
 @JsonSubTypes({
   @JsonSubTypes.Type(value = AtencionMedica.class,      name = "ATENCION_MEDICA"),

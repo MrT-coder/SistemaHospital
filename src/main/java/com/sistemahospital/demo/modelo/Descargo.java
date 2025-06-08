@@ -34,7 +34,6 @@ public class Descargo extends DocumentoTransaccion {
         copia.setValorTotal(this.getValorTotal());
         copia.setEstado(this.getEstado());
         copia.setFechaDescargo(LocalDateTime.now());
-        // aquí clonarías también las líneas cuando estén implementadas
         return copia;
     }
 }

@@ -51,7 +51,6 @@ public class DescargoServiceImpl implements DescargoService {
     ld.setSubtotal(l.getSubtotal());
 
     if (l instanceof LineaServicio ls) {
-        // Mapeamos el servicio completo
         ServicioDTO sd = new ServicioDTO();
         sd.setId(ls.getServicio().getId());
         sd.setDescripcion(ls.getServicio().getDescripcion());
@@ -59,7 +58,6 @@ public class DescargoServiceImpl implements DescargoService {
         ld.setServicio(sd);
 
     } else if (l instanceof LineaProducto lp) {
-        // Mapeamos el producto completo
         ProductoDTO pd = new ProductoDTO();
         pd.setId(lp.getProducto().getId());
         pd.setDescripcion(lp.getProducto().getDescripcion());
@@ -80,8 +78,6 @@ public class DescargoServiceImpl implements DescargoService {
         dto.setValorTotal(d.getValorTotal());
         dto.setEstado(d.getEstado());
         dto.setPacienteId(d.getPaciente().getId());
-
-        // ← aquí mapeas las líneas
         List<LineaDTO> lineas = d.getLineas().stream()
                 .map(this::toLineaDTO)
                 .collect(Collectors.toList());
@@ -121,24 +117,13 @@ public class DescargoServiceImpl implements DescargoService {
                 .collect(Collectors.toList());
     }
 
-    // public Optional<Descargo> findById(Long id) {
-    // return repo.findById(id);
-    // }
+ 
 
     public Descargo save(Descargo descargo) {
-        // puedes inicializar estado PENDIENTE aquí
         descargo.setEstado(EstadoDocumento.PENDIENTE);
         return repo.save(descargo);
     }
 
-    // public Optional<Descargo> update(Long id, Descargo cambios) {
-    // return repo.findById(id).map(existing -> {
-    // existing.setFecha(cambios.getFecha());
-    // existing.setPaciente(cambios.getPaciente());
-    // // otros campos si los hay
-    // return repo.save(existing);
-    // });
-    // }
 
     public void delete(Long id) {
         repo.deleteById(id);
@@ -157,7 +142,7 @@ public class DescargoServiceImpl implements DescargoService {
         linea.setServicio(serv);
 
         desc.addLinea(linea);
-        repo.save(desc); // persiste también la nueva línea
+        repo.save(desc); 
         return linea;
     }
 

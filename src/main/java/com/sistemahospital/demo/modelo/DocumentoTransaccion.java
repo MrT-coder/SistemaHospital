@@ -104,7 +104,6 @@ public abstract class DocumentoTransaccion implements Prototype<DocumentoTransac
         return lineas;
     }
 
-    /** Clona el documento (deep copy), se implementa en cada subclase */
     @Override
     public abstract DocumentoTransaccion clone();
 
