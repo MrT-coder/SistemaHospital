@@ -1,0 +1,10 @@
+name: Deploy
+
+on: push
+
+jobs: 
+    first_job:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Hola Mundo
+              run: echo "Hola Mundo"
